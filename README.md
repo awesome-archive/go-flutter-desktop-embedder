@@ -1,171 +1,88 @@
 <img src="./mascot.png" width="170" align="right">
 
-# Go Flutter desktop embedder 
+# go-flutter - A package that brings Flutter to the desktop
 
-[![Join the chat at https://gitter.im/go-flutter-desktop-embedder/Lobby](https://badges.gitter.im/go-flutter-desktop-embedder/Lobby.svg)](https://gitter.im/go-flutter-desktop-embedder/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-<a href="https://stackoverflow.com/questions/tagged/flutter?sort=votes">
-   <img alt="Awesome Flutter" src="https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square" />
-</a>
+[![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat)](https://github.com/Solido/awesome-flutter)
+[![Documentation](https://godoc.org/github.com/go-flutter-desktop/go-flutter?status.svg)](http://godoc.org/github.com/go-flutter-desktop/go-flutter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-flutter-desktop/go-flutter)](https://goreportcard.com/report/github.com/go-flutter-desktop/go-flutter)
+[![Join the chat at https://gitter.im/go-flutter-desktop/go-flutter](https://badges.gitter.im/go-flutter-desktop/go-flutter.svg)](https://gitter.im/go-flutter-desktop/go-flutter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A Go (golang) [Custom Flutter Engine
-Embedder](https://github.com/flutter/flutter/wiki/Custom-Flutter-Engine-Embedders)
-for desktop
+## Purpose
 
-# Purpose
+[Flutter](http://flutter.io/) allows you to build beautiful native apps on iOS and Android from a single codebase.
 
-> Disclaimer: Despite being very similar in the end goal, This project doesn't compete with
-> [this](https://github.com/google/flutter-desktop-embedding) awesome one.
+This [unofficial](https://github.com/go-flutter-desktop/go-flutter/issues/191#issuecomment-511384007) project brings Flutter to the desktop through the power of [Go](http://golang.org/) and [GLFW](https://github.com/go-gl/glfw).
 
-The flutter engine itself doesn't know how to deal with desktop platforms _(eg handling mouse/keyboard input)_. Instead, it exposes an abstraction layer for whatever platform to implement. The purpose of this project is to implement [Flutter's Embedding API](https://github.com/flutter/engine/blob/master/shell/platform/embedder/embedder.h) using a **SINGLE** code base that runs on Windows, MacOS, and Linux.  [**GLFW**](https://github.com/go-gl/glfw) fits the job because it provides the right abstractions over the OpenGL's Buffer/Mouse/Keyboard for each platform. 
+The flutter engine itself doesn't know how to deal with desktop platforms _(eg handling mouse/keyboard input)_. Instead, it exposes an abstraction layer for whatever platform to implement. This project implements the [Flutter's Embedding API](https://github.com/flutter/flutter/wiki/Custom-Flutter-Engine-Embedders) using a single code base that runs on Windows, macOS, and Linux. For rendering, [**GLFW**](https://github.com/go-gl/glfw) fits the job because it provides the right abstractions over the OpenGL's Buffer/Mouse/Keyboard for each platform. 
 
-The choice of [Golang](https://github.com/golang/go) comes from the fact that it has the same tooling on every platform. Plus golang is a great language because it keeps everything simple and readable, which, I hope, will encourage people to contribute :grin:.
+The choice of [Golang](https://github.com/golang/go) comes from the fact that it has the same tooling on every platform. Plus Golang is a great language because it keeps everything simple and readable, which makes it easy to build cross-platform plugins.
 
-## How to install
+<p align="center">
+  <img src="./stocks.jpg" width="650" align="center" alt="Screenshot of the Stocks demo app on macOS">
+</p>
 
-<details>
-<summary> :package: :penguin: Linux</summary>
-<h4>From binaries</h4>
-Check out the <a href="https://github.com/Drakirus/go-flutter-desktop-embedder/releases">Release</a> page for prebuilt versions.
+## Getting started
 
-<h4>From source</h4>
+The best way to get started is to install [hover](https://github.com/go-flutter-desktop/hover), the official go-flutter tool to set up, build and run Flutter apps on the desktop, including hot-reload.
 
-Go read first: [go-gl/glfw](https://github.com/go-gl/glfw/)  
+Read the [hover tutorial](https://github.com/go-flutter-desktop/hover) to run your app on the desktop, or start with [one of our example apps](https://github.com/go-flutter-desktop/examples).
 
+If you want more in-depth information about go-flutter, read the [wiki](https://github.com/go-flutter-desktop/go-flutter/wiki).
 
-```bash
-# Clone
-git clone https://github.com/Drakirus/go-flutter-desktop-embedder.git
-cd go-flutter-desktop-embedder
+## Supported features
 
-# Build the flutter simpleDemo project
-cd example/simpleDemo/
-cd flutter_project/demo/
-flutter build bundle
-cd ../..
+- Linux :penguin:
+- MacOS :apple:
+- Windows :checkered_flag:
+- [**Hot Reload**](https://github.com/go-flutter-desktop/go-flutter/issues/129#issuecomment-513590141)
+- Plugin system
+  - BinaryMessageCodec, BinaryMessageChannel
+  - StandardMessageCodec, JSONMessageCodec
+  - StandardMethodCodec, **MethodChannel**
+- Plugin detection for [suppoted plugins](https://github.com/go-flutter-desktop/go-flutter/wiki/Create-a-hover-compatible-plugin)
+- Importable as Go library into custom projects
+- UTF-8 Text input
+- Clipboard copy & paste
+- Window title and icon
+- Standard keyboard shortcuts
+  - <kbd>ctrl-c</kbd>  <kbd>ctrl-v</kbd>  <kbd>ctrl-x</kbd>  <kbd>ctrl-a</kbd>
+  - <kbd>Home</kbd>  <kbd>End</kbd>  <kbd>shift-Home</kbd>  <kbd>shift-End</kbd>
+  - <kbd>Left</kbd>  <kbd>ctrl-Left</kbd>  <kbd>ctrl-shift-Left</kbd>
+  - <kbd>Right</kbd>  <kbd>ctrl-Right</kbd>  <kbd>ctrl-shift-Right</kbd>
+  - <kbd>Backspace</kbd>  <kbd>ctrl-Backspace</kbd> <kbd>Delete</kbd>
+- Mouse-over/hovering
+- Mouse-buttons
+- RawKeyboard events
+- Distribution format (windows-msi, mac-dmg, linux-appimage, and more)
+- Cross-compiling using docker :whale:
 
-# Download the share library, the one corresponding to your flutter version.
-go run engineDownloader.go
+Are you missing a feature? [Open an issue!](https://github.com/go-flutter-desktop/go-flutter/issues/new)
 
-# REQUIRED before every `go build`. The CGO compiler need to know where to look for the share library
-export CGO_LDFLAGS="-L${PWD}"
-# The share library must stay next to the generated binary.
+## Examples
 
-# Get the libraries
-go get -u -v github.com/Drakirus/go-flutter-desktop-embedder
+A separate repository contains example Flutter apps that also run on the desktop. Go to [github.com/go-flutter-desktop/examples](https://github.com/go-flutter-desktop/examples) to give them a try.
 
-# Build the example project
-go build main.go
+## Plugins
 
-# `go run main.go` is not working ATM.
-```
+Some popular plugins are already implemented over at [github.com/go-flutter-desktop/plugins](https://github.com/go-flutter-desktop/plugins).
+If you have implemented a plugin that you would like to share, feel free to open a PR on the plugins repository!  
 
-</details>
+For a detailed tutorial on how to create a plugin, read the [wiki](https://github.com/go-flutter-desktop/go-flutter/wiki/Implement-a-plugin).
 
-<details>
-<summary> :package: :checkered_flag: Windows</summary>
-<h4>From binaries</h4>
-Check out the <a href="https://github.com/Drakirus/go-flutter-desktop-embedder/releases">Release</a> page for prebuilt versions.
+## Version compatibility
 
-<h4>From source</h4>
+### Flutter version
 
-Go read first: [go-gl/glfw](https://github.com/go-gl/glfw/)  
+Flutter itself is a relatively young project. Its framework and engine are updated often. The go-flutter project tries to stay compatible with the [beta channel](https://github.com/flutter/flutter/wiki/Flutter-build-release-channels) of Flutter.
 
+### Go version
 
-```bash
-# Clone
-git clone https://github.com/Drakirus/go-flutter-desktop-embedder.git
-cd go-flutter-desktop-embedder
+Updating Go is simple and Go [seldomly has backwards-incompatible changes](https://golang.org/doc/go1compat). This project remains compatible with the [latest Go stable release](https://golang.org/dl/).
 
-# Build the flutter simpleDemo project
-cd example/simpleDemo/
-cd flutter_project/demo/
-flutter build bundle
-cd ../..
+### GLFW version
 
-# Download the share library, the one corresponding to your flutter version.
-go run engineDownloader.go
+This project uses go-gl/glfw for GLFW v3.3.
 
-# REQUIRED before every `go build`. The CGO compiler need to know where to look for the share library
-set CGO_LDFLAGS=-L%cd%
-# The share library must stay next to the generated binary.
-# If you ran into a MinGW ld error, checkout: https://github.com/Drakirus/go-flutter-desktop-embedder/issues/34
+## License
 
-# Get the libraries
-go get -u -v github.com/Drakirus/go-flutter-desktop-embedder
-
-# Build the example project
-go build main.go
-
-# `go run main.go` is not working ATM.
-```
-
-</details>
-
-<details>
-<summary> :package: :apple: MacOS</summary>
-<h4>From binaries</h4>
-Check out the <a href="https://github.com/Drakirus/go-flutter-desktop-embedder/releases">Release</a> page for prebuilt versions.
-
-<h4>From source</h4>
-
-Go read first: [go-gl/glfw](https://github.com/go-gl/glfw/)  
-
-
-```bash
-# Clone
-git clone https://github.com/Drakirus/go-flutter-desktop-embedder.git
-cd go-flutter-desktop-embedder
-
-# Build the flutter simpleDemo project
-cd example/simpleDemo/
-cd flutter_project/demo/
-flutter build bundle
-cd ../..
-
-# Download the share library, the one corresponding to your flutter version.
-go run engineDownloader.go
-
-# REQUIRED before every `go build`. The CGO compiler need to know where to look for the share library
-export CGO_LDFLAGS="-F${PWD} -Wl,-rpath,@executable_path"
-# The share library must stay next to the generated binary.
-
-# Get the libraries
-go get -u -v github.com/Drakirus/go-flutter-desktop-embedder
-
-# Build the example project
-go build main.go
-
-# `go run main.go` is not working ATM.
-```
-
-</details>
-
-
-
-## Flutter Demos Projects
-
-The examples are available [here](./example/).
-
-<img src="./stocks.jpg" width="900" align="center" alt="Screenshot of the Stocks demo app on macOS">
-
-## Support
-
-- [x] Linux :penguin:
-- [x] Windows :checkered_flag:
-- [x] MacOS :apple:
-- [x] Importable go library
-- [ ] Plugins [Medium article on how the the Flutter's messaging works](https://medium.com/flutter-io/flutter-platform-channels-ce7f540a104e)
-   - [x] JSON MethodChannel
-   - [ ] StandardMethodCodec, ...
-- [ ] System plugins [Platform channels used by the Flutter system](https://github.com/flutter/flutter/blob/master/packages/flutter/lib/src/services/system_channels.dart)
-  - [x] Window Title
-  - [x] Text input
-  - [x] Clipboard (through shortcuts and UI)
-  - [x] Keyboard shortcuts
-    - [x] <kbd>ctrl-c</kbd>  <kbd>ctrl-v</kbd>  <kbd>ctrl-x</kbd>  <kbd>ctrl-a</kbd>
-    - [x] <kbd>Home</kbd>  <kbd>End</kbd>  <kbd>shift-Home</kbd>  <kbd>shift-End</kbd>
-    - [x] <kbd>Left</kbd>  <kbd>ctrl-Left</kbd>  <kbd>ctrl-shift-Left</kbd>
-    - [x] <kbd>Right</kbd>  <kbd>ctrl-Right</kbd>  <kbd>ctrl-shift-Right</kbd>
-    - [x] <kbd>Backspace</kbd>  <kbd>ctrl-Backspace</kbd> <kbd>Delete</kbd>
-    - [ ] <kbd>ctrl-Delete</kbd>
-  - [ ] Key events
+[BSD 3-Clause License](LICENSE)

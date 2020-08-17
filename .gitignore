@@ -30,3 +30,6 @@ example/stocks/stocks
 
 # other crashes report:
 core.*
+
+.vscode
+.idea
